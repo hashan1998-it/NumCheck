@@ -13,7 +13,8 @@ The backlog for NumCheck v1. Every task links to the requirements it delivers in
 2. First commit on the branch: tick the previous task in this file (`docs: mark T-0XX as done`).
 3. Build the task in small commits using Conventional Commits (`feat:`, `fix:`, `test:`, `chore:`, `docs:`).
 4. Open a pull request. The description says what changed, which requirement IDs it covers, and includes a screenshot for UI work.
-5. CI must be green. Review, fix the comments, then merge.
+5. For any task that changes a screen: run an unslop review (DESIGN.md section 10) and fix the findings before opening the pull request.
+6. CI must be green. Review, fix the comments, then merge.
 
 Nothing goes to `main` except through a pull request.
 
@@ -25,6 +26,9 @@ Nothing goes to `main` except through a pull request.
 - Loading, empty and error states handled for every data view.
 - Works at 360px wide and on desktop.
 - Risk levels use icon + text + color, never color alone.
+- UI follows [DESIGN.md](DESIGN.md): tokens only, no hard-coded hex values, sizes or radii. Works in light and dark themes.
+- No emoji in the UI. Icons are lucide only.
+- Screens passed an unslop review.
 - All visible text comes from `messages/en.json` (from T-005 onwards).
 - Usable with keyboard only. Form fields have labels.
 
@@ -59,6 +63,7 @@ Size: **S** = under 2 hours, **M** = half a day, **L** = a full day.
 - [ ] **T-002 Tooling** (S)
   - Prettier configured with the Tailwind plugin.
   - Vitest installed. One example test passes.
+  - shadcn/ui initialised with lucide icons. `Button` renders on the home page.
   - `npm run lint`, `npm run typecheck`, `npm run format` and `npm run test` exist and pass.
 
 - [ ] **T-003 CI pipeline** (S)
@@ -76,6 +81,14 @@ Size: **S** = under 2 hours, **M** = half a day, **L** = a full day.
 - [ ] **T-005 i18n setup** (S) — Design D7
   - next-intl installed. All UI text comes from `messages/en.json`.
   - The home page shows a heading from the messages file.
+
+- [ ] **T-007 Design tokens** (M) — [DESIGN.md](DESIGN.md), NFR-ACC-01, NFR-ACC-02 — do this right after T-002
+  - Light and dark color tokens from DESIGN.md section 2 are CSS variables in `globals.css`, mapped onto the shadcn variables and into Tailwind, including every risk level's `surface`, `text` and `solid`.
+  - Radius tokens (`sm`, `md`, `lg`, `full`) and the type scale from section 3.2 are available as Tailwind utilities.
+  - Mulish (500, 700) and JetBrains Mono (700) load through `next/font` with no layout shift.
+  - next-themes is installed with `attribute="class"`, following the system theme by default.
+  - The motion tokens from DESIGN.md 8.2 (one easing curve, three durations) exist as Tailwind utilities.
+  - A temporary `/styleguide` page shows buttons, search pill, text input, every risk badge and banner, the tally pill, a number card and the type scale in both themes.
 
 - [ ] **T-006 Deploy the skeleton** (S)
   - App is live on Vercel with dev environment variables set.
@@ -132,8 +145,9 @@ Pure TypeScript, no database or UI. Write the tests first.
 ### Phase 3 – Public pages (Sprint 2)
 
 - [ ] **T-030 App layout and risk badge** (M) — NFR-USE-01, NFR-ACC-01
-  - Header with logo and login link, footer with links to static pages.
-  - `RiskBadge` component shows every level from Design 9.4 with icon, label and color.
+  - Nav bar, footer and theme toggle as in DESIGN.md 7.12. Footer links to static pages and shows the disclaimer.
+  - `RiskBadge`, `RiskBanner`, `TallyPill` and `NumberCard` components follow DESIGN.md 7.3 – 7.6.
+  - Phone numbers everywhere use the monospace `number` type tokens.
 
 - [ ] **T-031 Home search** (S) — FR-SEARCH-04, FR-SEARCH-05
   - Search box normalizes input and redirects to `/number/[digits]`.
@@ -212,7 +226,7 @@ Pure TypeScript, no database or UI. Write the tests first.
 
 - [ ] **T-062 Sinhala UI** (M) — NFR-USE-02 _(cut if late)_
   - `messages/si.json` with every string translated. Language switch in the header, saved in a cookie.
-  - Sinhala font loads through `next/font` with no layout shift.
+  - Noto Sans Sinhala (500, 700) loads through `next/font` with no layout shift, and Sinhala text uses a line height of at least 1.6 (DESIGN.md 3.3).
 
 ### Phase 7 – Quality and launch (Sprint 5)
 
@@ -222,6 +236,7 @@ Pure TypeScript, no database or UI. Write the tests first.
 
 - [ ] **T-071 Accessibility pass** (M) — NFR-ACC-01, NFR-ACC-02
   - Every page passes an axe scan with no serious or critical issues.
+  - A final unslop review of every public page finds nothing that breaks DESIGN.md.
   - The whole report flow can be completed with the keyboard only.
 
 - [ ] **T-072 Performance pass** (M) — NFR-PERF-01, NFR-PERF-02

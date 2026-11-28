@@ -16,7 +16,9 @@ This document describes how NumCheck v1 will be built to meet the requirements i
 | Layer | Choice | Reason |
 |---|---|---|
 | Framework | Next.js (App Router), TypeScript | Server-rendered number pages for SEO (NFR-SEO-01); frontend and backend in one project |
-| Styling | Tailwind CSS | Fast mobile-first UI (NFR-USE-01) |
+| Styling | Tailwind CSS, tokens from [DESIGN.md](DESIGN.md) | Fast mobile-first UI (NFR-USE-01) |
+| Components | shadcn/ui (Radix UI) + lucide icons | Accessible primitives whose code lives in the repo, restyled to DESIGN.md (NFR-ACC-02). See DESIGN.md section 9 |
+| Design review | unslop (Claude Code plugin) | Audits every screen for machine-made UI patterns before its pull request. See DESIGN.md section 10 |
 | Database | Supabase PostgreSQL | Free tier, row-level security (NFR-SEC-02), triggers for abuse rules |
 | Auth | Supabase Auth (Google, email magic link) | FR-AUTH-01, FR-AUTH-02 with no extra service |
 | Validation | Zod | Same schema validates forms on the server (NFR-SEC-03) |
@@ -328,6 +330,8 @@ sequenceDiagram
 
 ### 9.1 Principles
 
+The visual design system (colors, type, spacing, components) is defined in [DESIGN.md](DESIGN.md). This section covers layout and behavior only.
+
 - Mobile-first, one column, large tap targets.
 - Risk level always shown as **icon + text + color**, never color alone (NFR-ACC-01).
 - Neutral, factual wording (FR-PAGE-05).
@@ -346,11 +350,11 @@ sequenceDiagram
 ├──────────────────────────────┤
 │ Recent reports               │
 │ ┌──────────────────────────┐ │
-│ │ 🔴 High  077 123 4567    │ │
+│ │ [■ High risk] 077 123... │ │
 │ │ Fake bank call · 5m ago  │ │
 │ └──────────────────────────┘ │
 │ ┌──────────────────────────┐ │
-│ │ ⚪ Unverified 071 555... │ │
+│ │ [○ Unverified] 071 555...│ │
 │ │ Lottery/prize · 1h ago   │ │
 │ └──────────────────────────┘ │
 ├──────────────────────────────┤
@@ -368,7 +372,7 @@ sequenceDiagram
 │ +94 77 123 4567              │
 │                              │
 │ ┌──────────────────────────┐ │
-│ │ 🔴 HIGH RISK              │ │
+│ │ ■ High risk              │ │
 │ │ 12 users reported this   │ │
 │ └──────────────────────────┘ │
 │                              │
@@ -384,7 +388,7 @@ sequenceDiagram
 │ Scam · Call · 2 days ago     │
 │ "Said my bank account was    │
 │  locked and asked for OTP"   │
-│                       [🚩]   │
+│                    [flag]    │
 │ ──────────────────────────── │
 │ ...                          │
 ├──────────────────────────────┤
@@ -394,13 +398,15 @@ sequenceDiagram
 
 ### 9.4 Risk level styles
 
-| Level | Icon | Label | Color |
+| Level | Icon (lucide) | Label | Color |
 |---|---|---|---|
-| unverified | ⚪ | Unverified – not enough reports | Gray |
-| low | 🟢 | Low risk | Green |
-| medium | 🟡 | Medium risk | Amber |
-| high | 🔴 | High risk | Red |
-| disputed | ⚖️ | Disputed – under review | Blue |
+| unverified | `circle-dashed` | Unverified – not enough reports | Gray |
+| low | `shield-check` | Low risk | Green |
+| medium | `triangle-alert` | Medium risk | Amber |
+| high | `octagon-alert` | High risk | Red |
+| disputed | `scale` | Disputed – under review | Violet |
+
+Exact color tokens for light and dark themes are in [DESIGN.md](DESIGN.md) section 2.3. Disputed is violet, not blue, because blue is the brand color for buttons and links.
 
 ## 10. Project Structure
 
