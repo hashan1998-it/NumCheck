@@ -54,7 +54,7 @@ Size: **S** = under 2 hours, **M** = half a day, **L** = a full day.
 
 ### Phase 0 – Setup (Sprint 1)
 
-- [ ] **T-001 Create the project** (S)
+- [x] **T-001 Create the project** (S)
   - Next.js app with TypeScript, Tailwind, ESLint, App Router and the `src/` directory.
   - `strict` is on in `tsconfig.json`. Path alias `@/*` works.
   - Git repository initialised with a sensible `.gitignore`. Existing `docs/` folder is the first commit.
